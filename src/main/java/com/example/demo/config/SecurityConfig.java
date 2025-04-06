@@ -1,7 +1,9 @@
 package com.example.demo.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,10 +15,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.example.demo.filter.BearerTokenFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	
+	private final BearerTokenFilter bearerTokenFilter;
+	
+	public SecurityConfig(@Lazy BearerTokenFilter bearerTokenFilter) {
+		this.bearerTokenFilter = bearerTokenFilter;
+	}
+
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(request -> {
@@ -29,6 +41,8 @@ public class SecurityConfig {
 		http.sessionManagement(session -> {
 			session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		});
+		
+		http.addFilterBefore(bearerTokenFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 
@@ -47,6 +61,11 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder(BCryptVersion.$2A);
 	}
 	
-	
+	@Bean
+	public FilterRegistrationBean<BearerTokenFilter> tenantFilterRegistration(BearerTokenFilter filter) {
+		FilterRegistrationBean<BearerTokenFilter> registration = new FilterRegistrationBean<>(filter);
+		registration.setEnabled(false);
+		return registration;
+	}
 
 }
