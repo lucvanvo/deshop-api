@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -28,7 +28,7 @@ public class User implements UserDetails {
 	private String fullname;
 	@Column (length = 50, nullable = false, unique = true)
     private String email;
-	@Column (length = 50, nullable = false)
+	@Column (length = 150, nullable = false)
     private String password;
 	@Column(length = 10, nullable = false, unique = true)
     private String phone;
@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private String address;
 
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
 	public User() {
 		super();
@@ -44,7 +44,7 @@ public class User implements UserDetails {
 	}
 
 	public User(String id, String fullname, String email, String password, String phone, String address,
-			LocalDate createdAt) {
+			LocalDateTime createdAt) {
 		super();
 		this.id = id;
 		this.fullname = fullname;
@@ -103,11 +103,11 @@ public class User implements UserDetails {
 		this.address = address;
 	}
 
-	public LocalDate getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(LocalDate createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
