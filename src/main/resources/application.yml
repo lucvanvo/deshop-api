@@ -5,7 +5,7 @@ spring:
   jpa:      
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     database-platform: org.hibernate.dialect.MySQLDialect
  #   properties:
   #    hibernate:
@@ -21,6 +21,6 @@ spring:
  #     springframework:
    #     security: TRACE
 
-#jwt:
-#  private-key-file: ${JWT_PRIVATE_KEY_FILE}
-#  public-key-file: ${JWT_PUBLIC_KEY_FILE}
+jwt:
+  private-key-file: ${JWT_PRIVATE_KEY_FILE}
+  public-key-file: ${JWT_PUBLIC_KEY_FILE}

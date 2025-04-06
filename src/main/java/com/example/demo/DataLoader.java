@@ -28,14 +28,16 @@ public class DataLoader implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		var admin = new User();
-		admin.setAddress("441, Bao Bun");
-		admin.setCreatedAt(LocalDateTime.now());
-		admin.setEmail("admin@gmail.com");
-		admin.setFullname("Admin");
-		admin.setPassword(passwordEncoder.encode("admin"));
-		admin.setPhone("113");
-		userRepository.save(admin);
+		if(userRepository.findByEmail("admin@gmail.com").isEmpty()){						
+			var admin = new User();
+			admin.setAddress("441, Bao Bun");
+			admin.setCreatedAt(LocalDateTime.now());
+			admin.setEmail("admin@gmail.com");
+			admin.setFullname("Admin");
+			admin.setPassword(passwordEncoder.encode("admin"));
+			admin.setPhone("113");
+			userRepository.save(admin);
+		}
 		
 	}
 
