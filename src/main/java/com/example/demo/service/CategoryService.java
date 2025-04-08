@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,7 +38,7 @@ public class CategoryService {
         return CategoryResponse.fromCategory(newCategory);
     }
 
-    public Iterable<CategoryResponse> getAllCategories() {
+    public List<CategoryResponse> getAllCategories() {
         // Check if user is authenticated and has the right role
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -45,9 +46,7 @@ public class CategoryService {
         }
 
         var categories = categoryRepository.findAll();
-        if (categories.isEmpty()) {
-            throw new ResourceNotFoundException("No categories found.");
-        }
+       
 
         return categories.stream().map(CategoryResponse::fromCategory).collect(Collectors.toList());
     }

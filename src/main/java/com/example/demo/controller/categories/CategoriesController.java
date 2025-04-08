@@ -31,6 +31,10 @@ public class CategoriesController {
 
     @GetMapping
     public ResponseEntity<Iterable<CategoryResponse>> getAll() {
+        var categories = categoriesService.getAllCategories();
+        if (categories.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(categoriesService.getAllCategories());
     }
 
