@@ -62,4 +62,24 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
+    public CategoryResponse updateCategory(Long id, CategoryRequest request) {
+        // Check if user is authenticated and has the right role
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("You are not authorized to update a category.");
+        }
+
+        // Check if the category exists
+        var category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+
+        // Check if the name has changed
+        if (!category.getName().equals(request.name())) {
+            category.setName(request.name());
+            return CategoryResponse.fromCategory(categoryRepository.save(category));
+        }
+
+        return CategoryResponse.fromCategory(category);
+    }
+
 }
