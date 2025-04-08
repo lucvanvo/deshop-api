@@ -52,4 +52,14 @@ public class CategoryService {
         return categories.stream().map(CategoryResponse::fromCategory).collect(Collectors.toList());
     }
 
+    public void deleteCategory(Long id) {
+        // Check if user is authenticated and has the right role
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("You are not authorized to delete a category.");
+        }
+
+        categoryRepository.deleteById(id);
+    }
+
 }
