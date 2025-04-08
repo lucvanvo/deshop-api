@@ -1,4 +1,4 @@
-package com.example.demo.controller.exception.auth;
+package com.example.demo.exception.auth;
 
 public class UnauthorizedException extends RuntimeException {
     public UnauthorizedException(String message) {

@@ -11,6 +11,7 @@ import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("api/categories")
@@ -20,9 +21,14 @@ public class CategoriesController {
     private final CategoryService categoriesService;
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> postMethodName(@RequestBody CategoryRequest request) {
+    public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest request) {
         var response = categoriesService.createCategory(request);
         return ResponseEntity.created(URI.create("/api/categories/" + response.id())).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<Iterable<CategoryResponse>> getAll() {
+        return ResponseEntity.ok(categoriesService.getAllCategories());
     }
 
 }
