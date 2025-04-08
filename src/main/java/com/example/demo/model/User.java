@@ -24,19 +24,19 @@ public class User implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
-	@Column (length = 50, nullable = false)
+	@Column(length = 50, nullable = false)
 	private String fullname;
-	@Column (length = 50, nullable = false, unique = true)
-    private String email;
-	@Column (length = 150, nullable = false)
-    private String password;
+	@Column(length = 50, nullable = false, unique = true)
+	private String email;
+	@Column(length = 150, nullable = false)
+	private String password;
 	@Column(length = 10, nullable = false, unique = true)
-    private String phone;
-	@Column(length = 100, nullable = false )
-    private String address;
+	private String phone;
+	@Column(length = 100, nullable = false)
+	private String address;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
 	public User() {
 		super();
@@ -113,14 +113,12 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Arrays.asList(new SimpleGrantedAuthority("ADMIN"));
+		return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
 
 	@Override
 	public String getUsername() {
 		return this.email;
 	}
-    
-    
 
 }
