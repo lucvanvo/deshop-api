@@ -32,7 +32,7 @@ public record ProductRequest(Long id, Long categoryId, String name, String descr
         return Product.builder()
                 .id(id)
                 .name(name)
-                .discription(description)
+                .description(description)
                 .price(price)
                 .imageUrl(image.getOriginalFilename())
                 .build();

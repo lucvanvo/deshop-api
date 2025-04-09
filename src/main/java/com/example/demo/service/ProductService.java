@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.controller.products.ProductRequest;
 import com.example.demo.controller.products.ProductResponse;
 import com.example.demo.exception.ResourceExistedException;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.auth.UnauthorizedException;
 import com.example.demo.model.User;
 import com.example.demo.repository.CategoryRepository;
@@ -60,14 +61,19 @@ public class ProductService {
         // Save the product to the database
         var product = request.toProduct(); // Convert request to product entity
         product.setImageUrl(imagePath.toString()); // Set the image path in the product object
-        category.addProduct(product); // Add the product to the category
+        product.setCategory(category); // Set the category in the product object
         var savedProduct = productRepository.save(product);
-        return ProductResponse.fromProduct(savedProduct, category.getId());
+        return ProductResponse.fromProduct(savedProduct, category);
     }
 
     public List<ProductResponse> getAllProducts() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllProducts'");
+        var productDetailsList = productRepository.getAllProductsDetails();
+        if (productDetailsList.isEmpty()) {
+            throw new ResourceNotFoundException("No products found.");
+        }
+        return productDetailsList.stream()
+                .map(ProductResponse::fromProductDetails)
+                .toList();
     }
 
     public void deleteProduct(Long id) {

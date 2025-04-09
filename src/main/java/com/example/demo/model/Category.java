@@ -1,17 +1,15 @@
 package com.example.demo.model;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
 
 @Entity
+@AllArgsConstructor
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,40 +17,8 @@ public class Category {
 	@Column(length = 100, nullable = false, unique = true)
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Product> products = new ArrayList<>();
-
-	public Category(Long id, String name, List<Product> products) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.products = products;
-	}
-
-	public void addProduct(Product product) {
-		products.add(product);
-	}
-
-	public void removeProduct(Product product) {
-		products.remove(product);
-	}
-
-	public List<Product> getProducts() {
-		return products;
-	}
-
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
-
 	public Category() {
 		super();
-	}
-
-	public Category(Long id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
 	}
 
 	public Long getId() {
