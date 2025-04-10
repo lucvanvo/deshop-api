@@ -77,8 +77,11 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteProduct'");
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("You are not authorized to delete a product.");
+        }
+        productRepository.deleteById(id);
     }
 
     public ProductResponse updateProduct(Long id, ProductRequest request) {
