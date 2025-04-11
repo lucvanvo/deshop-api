@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,7 +48,7 @@ public class ProductsController {
 
     @PutMapping("{id}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id,
-            @RequestBody ProductRequest request) {
+            @ModelAttribute ProductRequest request) throws IOException {
         var response = productService.updateProduct(id, request);
         return ResponseEntity.ok(response);
     }
