@@ -1,6 +1,5 @@
 package com.example.demo.controller.products;
 
-import com.example.demo.model.Category;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductDetails;
 
@@ -17,14 +16,10 @@ public record ProductResponse(
         String categoryName) {
 
     public static ProductResponse fromProduct(Product savedProduct) {
-        return fromProduct(savedProduct, null);
-    }
-
-    public static ProductResponse fromProduct(Product savedProduct, Category category) {
         return ProductResponse.builder()
                 .id(savedProduct.getId())
-                .categoryId(category != null ? category.getId() : null)
-                .categoryName(category != null ? category.getName() : null)
+                .categoryId(savedProduct.getCategory().getId())
+                .categoryName(savedProduct.getCategory().getName())
                 .name(savedProduct.getName())
                 .description(savedProduct.getDescription())
                 .price(savedProduct.getPrice())
