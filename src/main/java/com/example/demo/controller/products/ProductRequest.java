@@ -23,9 +23,6 @@ public record ProductRequest(Long id, Long categoryId, String name, String descr
         if (price == null || price <= 0) {
             throw new IllegalArgumentException("Price must be greater than 0");
         }
-        if (image == null || image.isEmpty()) {
-            throw new IllegalArgumentException("Image cannot be null or empty");
-        }
     }
 
     public Product toProduct() {
