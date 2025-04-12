@@ -143,4 +143,10 @@ public class ProductService {
             }
         }
     }
+
+    public ProductResponse getProduct(Long id) {
+        var product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        return ProductResponse.fromProduct(product);
+    }
 }

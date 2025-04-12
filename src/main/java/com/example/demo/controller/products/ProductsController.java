@@ -52,4 +52,10 @@ public class ProductsController {
         var response = productService.updateProduct(id, request);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
+        var product = productService.getProduct(id);
+        return ResponseEntity.ok(product);
+    }
 }
