@@ -149,4 +149,10 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         return ProductResponse.fromProduct(product);
     }
+
+    public List<ProductResponse> getProductsByIds(List<Long> ids) {
+        return productRepository.findAllById(ids).stream()
+                .map(ProductResponse::fromProduct)
+                .toList();
+    }
 }
