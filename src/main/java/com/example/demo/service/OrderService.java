@@ -105,4 +105,14 @@ public class OrderService {
         order.setStatus(OrderStatus.valueOf(status));
         orderRepository.save(order);
     }
+
+    public void cancelOrder(Long id) {
+        var order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            return;
+        }
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+    }
 }
