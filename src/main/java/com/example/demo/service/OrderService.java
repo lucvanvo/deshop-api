@@ -4,13 +4,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.controller.order.OrderDetailsResponse;
 import com.example.demo.controller.order.OrderRequest;
 import com.example.demo.controller.order.OrderResponse;
+import com.example.demo.exception.auth.UnauthorizedException;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderStatus;
+import com.example.demo.model.User;
 import com.example.demo.repository.OrderDetailsRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductRepository;
@@ -26,6 +30,12 @@ public class OrderService {
     private final ProductRepository productRepository;
 
     public OrderResponse createOrder(OrderRequest orderRequest) {
+
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("User is not authorized to create an order.");
+        }
+
         var order = Order.builder()
                 .address(orderRequest.address())
                 .phoneNumber(orderRequest.phoneNumber())
@@ -48,8 +58,7 @@ public class OrderService {
 
             orderDetails = orderDetailsRepository.save(orderDetails);
             orderDetailsList
-                    .add(OrderDetailsResponse.form(orderDetails, product.getPrice(),
-                            product.getPrice() * orderDetails.getQuantity()));
+                    .add(OrderDetailsResponse.from(orderDetails));
         }
 
         var totalPrice = orderDetailsList.stream()
@@ -59,4 +68,38 @@ public class OrderService {
         return OrderResponse.from(order, orderDetailsList, totalPrice);
     }
 
+    public List<OrderResponse> getOrdersWithDetails() {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("User is not authorized to create an order.");
+        }
+
+        var orders = orderRepository.findAll();
+        List<OrderResponse> orderResponses = new ArrayList<>();
+        for (var order : orders) {
+            var orderDetailsList = orderDetailsRepository.findByOrderId(order.getId());
+            var orderDetailsResponse = orderDetailsList.stream().map(OrderDetailsResponse::from).toList();
+            var totalPrice = orderDetailsResponse.stream()
+                    .mapToLong(OrderDetailsResponse::price)
+                    .sum();
+            OrderResponse orderResponse = OrderResponse.from(order, orderDetailsResponse, totalPrice);
+            orderResponses.add(orderResponse);
+        }
+        return orderResponses;
+    }
+
+    public List<OrderResponse> getOrdersWithoutDetails() {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("User is not authorized to create an order.");
+        }
+
+        var orders = orderRepository.findAll();
+        return orders.stream()
+                .map(order -> {
+                    var totalPrice = orderDetailsRepository.sumPriceByOrderId(order.getId());
+                    return OrderResponse.from(order, null, totalPrice);
+                })
+                .toList();
+    }
 }
