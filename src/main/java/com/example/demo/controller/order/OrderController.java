@@ -33,12 +33,13 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getOrders(
-            @RequestParam(defaultValue = "false", required = false) boolean withDetails) {
+            @RequestParam(defaultValue = "false", required = false) boolean withDetails,
+            @RequestParam(required = false) List<Long> ids) {
         List<OrderResponse> orderResponses;
         if (withDetails) {
-            orderResponses = orderService.getOrdersWithDetails();
+            orderResponses = orderService.getOrdersWithDetails(ids);
         } else {
-            orderResponses = orderService.getOrdersWithoutDetails();
+            orderResponses = orderService.getOrdersWithoutDetails(ids);
         }
 
         if (orderResponses.isEmpty()) {

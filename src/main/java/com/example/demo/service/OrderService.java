@@ -69,13 +69,13 @@ public class OrderService {
         return OrderResponse.from(order, orderDetailsList, totalPrice);
     }
 
-    public List<OrderResponse> getOrdersWithDetails() {
+    public List<OrderResponse> getOrdersWithDetails(List<Long> ids) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             throw new UnauthorizedException("User is not authorized to create an order.");
         }
 
-        var orders = orderRepository.findAll();
+        var orders = ids == null || ids.isEmpty() ? orderRepository.findAll() : orderRepository.findAllById(ids);
         List<OrderResponse> orderResponses = new ArrayList<>();
         for (var order : orders) {
             var orderDetailsList = orderDetailsRepository.findByOrderId(order.getId());
@@ -89,13 +89,14 @@ public class OrderService {
         return orderResponses;
     }
 
-    public List<OrderResponse> getOrdersWithoutDetails() {
+    public List<OrderResponse> getOrdersWithoutDetails(List<Long> ids) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             throw new UnauthorizedException("User is not authorized to create an order.");
         }
 
-        var orders = orderRepository.findAll();
+        var orders = ids == null || ids.isEmpty() ? orderRepository.findAll() : orderRepository.findAllById(ids);
+
         return orders.stream()
                 .map(order -> {
                     var totalPrice = orderDetailsRepository.sumPriceByOrderId(order.getId());
