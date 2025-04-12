@@ -1,7 +1,6 @@
 package com.example.demo.controller.order;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;

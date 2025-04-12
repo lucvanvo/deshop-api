@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +21,8 @@ import jakarta.persistence.Enumerated;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +44,8 @@ public class Order {
 
 	private String notes;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private OrderStatus status;
+	@Builder.Default
+	private OrderStatus status = OrderStatus.NEW; // Default status is NEW
 }

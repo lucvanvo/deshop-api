@@ -7,8 +7,8 @@ import lombok.Builder;
 @Builder
 public record OrderResponse(Long id, String address, String orderPersonName,
         String phoneNumber, String email, OrderStatus status,
-        Iterable<OrderDetailsResponse> orderDetails) {
-    public static OrderResponse from(Order order, Iterable<OrderDetailsResponse> orderDetails) {
+        Iterable<OrderDetailsResponse> orderDetails, Long totalPrice) {
+    public static OrderResponse from(Order order, Iterable<OrderDetailsResponse> orderDetails, Long totalPrice) {
         return OrderResponse.builder()
                 .id(order.getId())
                 .address(order.getAddress())
@@ -17,7 +17,7 @@ public record OrderResponse(Long id, String address, String orderPersonName,
                 .email(order.getEmail())
                 .status(order.getStatus())
                 .orderDetails(orderDetails)
-                .build();
+                .totalPrice(totalPrice).build();
     }
 
 }
