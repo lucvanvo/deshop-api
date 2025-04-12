@@ -37,6 +37,9 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/orders",
 							"/api/orders/**", "/api/categories", "/api/categories/**")
 					.permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/porders").permitAll()
+					.requestMatchers(HttpMethod.PUT, "api/orders/*/status/cancel")
+					.permitAll()
 					.anyRequest().authenticated();
 		});
 		http.csrf(csrf -> {

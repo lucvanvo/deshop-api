@@ -31,12 +31,6 @@ public class OrderService {
     private final ProductRepository productRepository;
 
     public OrderResponse createOrder(OrderRequest orderRequest) {
-
-        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            throw new UnauthorizedException("User is not authorized to create an order.");
-        }
-
         var order = Order.builder()
                 .address(orderRequest.address())
                 .phoneNumber(orderRequest.phoneNumber())
@@ -70,10 +64,6 @@ public class OrderService {
     }
 
     public List<OrderResponse> getOrdersWithDetails(List<Long> ids) {
-        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            throw new UnauthorizedException("User is not authorized to create an order.");
-        }
 
         var orders = ids == null || ids.isEmpty() ? orderRepository.findAll() : orderRepository.findAllById(ids);
         List<OrderResponse> orderResponses = new ArrayList<>();
@@ -90,11 +80,6 @@ public class OrderService {
     }
 
     public List<OrderResponse> getOrdersWithoutDetails(List<Long> ids) {
-        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            throw new UnauthorizedException("User is not authorized to create an order.");
-        }
-
         var orders = ids == null || ids.isEmpty() ? orderRepository.findAll() : orderRepository.findAllById(ids);
 
         return orders.stream()
@@ -115,10 +100,6 @@ public class OrderService {
     }
 
     public void updateOrderStatus(Long id, String status) {
-        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            throw new UnauthorizedException("User is not authorized to create an order.");
-        }
         var order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         order.setStatus(OrderStatus.valueOf(status));
