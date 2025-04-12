@@ -39,16 +39,7 @@ public class CategoryService {
     }
 
     public List<CategoryResponse> getAllCategories() {
-        // Check if user is authenticated and has the right role
-        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            throw new UnauthorizedException("You are not authorized to create a category.");
-        }
-
-        var categories = categoryRepository.findAll();
-       
-
-        return categories.stream().map(CategoryResponse::fromCategory).collect(Collectors.toList());
+        return categoryRepository.findAll().stream().map(CategoryResponse::fromCategory).toList();
     }
 
     public void deleteCategory(Long id) {

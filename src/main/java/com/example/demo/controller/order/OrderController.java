@@ -60,4 +60,10 @@ public class OrderController {
         orderService.updateOrderStatus(id, status);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/status/cancel")
+    public ResponseEntity<Void> cancelOrder(@PathVariable Long id) {
+        orderService.cancelOrder(id);
+        return ResponseEntity.noContent().build();
+    }
 }
