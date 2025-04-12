@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.controller.order.OrderDetailsResponse;
 import com.example.demo.controller.order.OrderRequest;
 import com.example.demo.controller.order.OrderResponse;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.auth.UnauthorizedException;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderStatus;
@@ -68,13 +69,13 @@ public class OrderService {
         return OrderResponse.from(order, orderDetailsList, totalPrice);
     }
 
-    public List<OrderResponse> getOrdersWithDetails() {
+    public List<OrderResponse> getOrdersWithDetails(List<Long> ids) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             throw new UnauthorizedException("User is not authorized to create an order.");
         }
 
-        var orders = orderRepository.findAll();
+        var orders = ids == null || ids.isEmpty() ? orderRepository.findAll() : orderRepository.findAllById(ids);
         List<OrderResponse> orderResponses = new ArrayList<>();
         for (var order : orders) {
             var orderDetailsList = orderDetailsRepository.findByOrderId(order.getId());
@@ -88,18 +89,39 @@ public class OrderService {
         return orderResponses;
     }
 
-    public List<OrderResponse> getOrdersWithoutDetails() {
+    public List<OrderResponse> getOrdersWithoutDetails(List<Long> ids) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             throw new UnauthorizedException("User is not authorized to create an order.");
         }
 
-        var orders = orderRepository.findAll();
+        var orders = ids == null || ids.isEmpty() ? orderRepository.findAll() : orderRepository.findAllById(ids);
+
         return orders.stream()
                 .map(order -> {
                     var totalPrice = orderDetailsRepository.sumPriceByOrderId(order.getId());
                     return OrderResponse.from(order, null, totalPrice);
                 })
                 .toList();
+    }
+
+    public void deleteOrder(Long id) {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("User is not authorized to create an order.");
+        }
+        orderDetailsRepository.findByOrderId(id).forEach(orderDetailsRepository::delete);
+        orderRepository.deleteById(id);
+    }
+
+    public void updateOrderStatus(Long id, String status) {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("User is not authorized to create an order.");
+        }
+        var order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        order.setStatus(OrderStatus.valueOf(status));
+        orderRepository.save(order);
     }
 }

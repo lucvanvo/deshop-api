@@ -12,7 +12,10 @@ import com.example.demo.service.OrderService;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/api/orders")
@@ -30,12 +33,13 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getOrders(
-            @RequestParam(defaultValue = "false", required = false) boolean withDetails) {
+            @RequestParam(defaultValue = "false", required = false) boolean withDetails,
+            @RequestParam(required = false) List<Long> ids) {
         List<OrderResponse> orderResponses;
         if (withDetails) {
-            orderResponses = orderService.getOrdersWithDetails();
+            orderResponses = orderService.getOrdersWithDetails(ids);
         } else {
-            orderResponses = orderService.getOrdersWithoutDetails();
+            orderResponses = orderService.getOrdersWithoutDetails(ids);
         }
 
         if (orderResponses.isEmpty()) {
@@ -43,5 +47,17 @@ public class OrderController {
         }
 
         return ResponseEntity.ok(orderResponses);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Void> updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
+        orderService.updateOrderStatus(id, status);
+        return ResponseEntity.noContent().build();
     }
 }
