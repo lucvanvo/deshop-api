@@ -102,4 +102,13 @@ public class OrderService {
                 })
                 .toList();
     }
+
+    public void deleteOrder(Long id) {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null || !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new UnauthorizedException("User is not authorized to create an order.");
+        }
+        orderDetailsRepository.findByOrderId(id).forEach(orderDetailsRepository::delete);
+        orderRepository.deleteById(id);
+    }
 }
