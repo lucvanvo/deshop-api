@@ -99,10 +99,10 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    public void updateOrderStatus(Long id, String status) {
+    public void updateOrderStatus(Long id, OrderStatus status) {
         var order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
-        order.setStatus(OrderStatus.valueOf(status));
+        order.setStatus(status);
         orderRepository.save(order);
     }
 

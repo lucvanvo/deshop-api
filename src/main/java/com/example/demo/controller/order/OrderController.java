@@ -56,12 +56,12 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
-        orderService.updateOrderStatus(id, status);
+    public ResponseEntity<Void> updateOrderStatus(@PathVariable Long id, @RequestBody OrderRequest orderRequest) {
+        orderService.updateOrderStatus(id, orderRequest.status());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/status/cancel")
+    @PostMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelOrder(@PathVariable Long id) {
         orderService.cancelOrder(id);
         return ResponseEntity.noContent().build();
