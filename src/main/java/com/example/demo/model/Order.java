@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +30,7 @@ public class Order {
 	private Long id;
 
 	@Column(nullable = false)
-	private LocalDate orderDate;
+	private LocalDateTime orderDate;
 
 	@Column(nullable = false)
 	private String orderPersonName;

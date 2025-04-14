@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class OrderService {
                 .phoneNumber(orderRequest.phoneNumber())
                 .orderPersonName(orderRequest.orderPersonName())
                 .email(orderRequest.email())
-                .orderDate(LocalDate.now())
+                .orderDate(LocalDateTime.now())
                 .notes(orderRequest.notes())
                 .status(OrderStatus.NEW)
                 .build();
