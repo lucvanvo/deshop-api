@@ -34,10 +34,10 @@ public class SecurityConfig {
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(request -> {
 			request.requestMatchers("/api/login").permitAll()
-					.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/orders",
-							"/api/orders/**", "/api/categories", "/api/categories/**")
+					.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**", "/api/categories",
+							"/api/categories/**")
 					.permitAll()
-					.requestMatchers(HttpMethod.POST, "/api/orders", "/api/orders/*/cancel").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
 					.anyRequest().authenticated();
 		});
 		http.csrf(csrf -> {
